@@ -2,16 +2,16 @@
 
 $app = require(__DIR__.'/../app.php');
 
-$app->register(new SilexGuzzle\GuzzleServiceProvider(), [
-   'guzzle.base_uri' => 'https://bomberman-prod.herokuapp.com/api/v1/profanity/',
-   'guzzle.timeout' => 5,
-   'guzzle.request_options' => [
-       'headers' => [
-           'Authorization' => 'Token token='.getenv('BOMBERMAN_API_KEY'),
-           'Accept' => 'application/json',
-        ],
-    ],
-]);
+// $app->register(new SilexGuzzle\GuzzleServiceProvider(), [
+//    'guzzle.base_uri' => 'https://bomberman-prod.herokuapp.com/api/v1/profanity/',
+//    'guzzle.timeout' => 5,
+//    'guzzle.request_options' => [
+//        'headers' => [
+//            'Authorization' => 'Token token='.getenv('BOMBERMAN_API_KEY'),
+//            'Accept' => 'application/json',
+//         ],
+//     ],
+// ]);
 
 $connection = $app['amqp']['default'];
 $channel = $connection->channel();
@@ -25,8 +25,8 @@ $callback = function($msg) use($app) {
     
     try {
         // call the "censor" API and pass it the text to clean up
-        $result = $app['guzzle']->get('censor', ['query' => ['corpus' => $msg->body]]);
-        $result = json_decode($result->getBody());
+        //$result = $app['guzzle']->get('censor', ['query' => ['corpus' => $msg->body]]);
+        $result = $msg->body; //json_decode($result->getBody());
         if($result) {
             $app['monolog']->debug('Censored message result is: ' . $result->censored_text);
             // store in Redis
