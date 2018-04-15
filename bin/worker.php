@@ -27,6 +27,7 @@ $callback = function($msg) use($app) {
         // call the "censor" API and pass it the text to clean up
         //$result = $app['guzzle']->get('censor', ['query' => ['corpus' => $msg->body]]);
         //$result = json_decode($result->getBody());
+      $result = true;
         if($result) {
             $app['monolog']->debug('Censored message result is: ' . $msg->body);
             // store in Redis
